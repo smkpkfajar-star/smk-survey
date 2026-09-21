@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Siswa Baru - SMK TAMANSISWA JETIS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        * {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #fafafa;
+            color: #18181b;
+            /* Grid background subtle ala tamsis.site */
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fafafa; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 99px; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-purple-500 selection:text-white">
+
+    <!-- Navbar Minimalis Ala tamsis.site -->
+    <header class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 sm:px-8 py-3.5">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-purple-600 font-bold text-lg">✦</span>
+                <span class="font-bold text-lg tracking-tight text-gray-900">tamsis<span class="text-gray-400 font-normal">.site</span></span>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full border border-purple-100">PPDB Survey</span>
+        </div>
+    </header>
+
+    <main class="w-full max-w-xl mx-auto px-4 sm:px-6 pt-6 pb-12">
+        
+        <!-- Header Title Section -->
+        <div class="text-center mb-8 sm:mb-10 fade-in">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white text-xl shadow-md shadow-purple-500/20 mb-4">
+                📋
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                Survey Siswa <span class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Baru</span>
+            </h1>
+            <p class="text-xs sm:text-sm text-gray-500 font-medium mt-1.5">SMK TAMANSISWA JETIS</p>
+        </div>
+
+        <!-- Message Box -->
+        <div id="messageBox" class="mb-6"></div>
+
+        <!-- STEP 1: Check NIS -->
+        <div id="step1Content" class="fade-in">
+            <div class="bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-gray-200/80">
+                <div class="mb-5">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-900">Verifikasi NIS</h2>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-1">Masukkan Nomor Induk Siswa Anda untuk memulai survey.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="nisInput" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                            Nomor Induk Siswa (NIS)
+                        </label>
+                        <div class="flex flex-col sm:flex-row gap-2.5">
+                            <input type="text" id="nisInput" placeholder="Contoh: 26000" inputmode="numeric"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600 focus:bg-white transition-all">
+                            <button type="button" id="searchBtn" onclick="searchStudent()"
+                                class="w-full sm:w-auto px-6 py-3 bg-gray-900 hover:bg-black text-white text-sm font-semibold rounded-xl active:scale-[0.98] transition-all duration-200 shadow-sm flex items-center justify-center min-w-[90px]">
+                                Cek NIS
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-2">Tekan <kbd class="bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded text-gray-600 font-mono">Enter</kbd> untuk mencari</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: Form Survey -->
+        <div id="step2Content" class="hidden fade-in space-y-6">
+            <!-- Student Banner -->
+            <div class="bg-gradient-to-r from-purple-50 via-indigo-50/50 to-white rounded-2xl p-4 sm:p-5 border border-purple-100 flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-purple-600 text-white font-bold flex items-center justify-center text-lg shadow-sm">
+                    👤
+                </div>
+                <div>
+                    <p class="text-[11px] font-semibold text-purple-600 uppercase tracking-wider">Identitas Ditemukan</p>
+                    <h3 class="text-base font-bold text-gray-900 leading-tight" id="studentName">Nama Siswa</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">NIS: <span id="studentNis" class="font-semibold text-gray-700">12345</span></p>
+                </div>
+            </div>
+
+            <!-- Main Form -->
+            <form id="dataForm" class="bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-gray-200/80 space-y-6">
+                <!-- Input Asal Sekolah -->
+                <div>
+                    <label for="asalSekolah" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                        Asal Sekolah <span class="text-purple-600">*</span>
+                    </label>
+                    <input type="text" id="asalSekolah" placeholder="Contoh: SMP Negeri 1 Jetis"
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600 focus:bg-white transition-all"
+                        required>
+                    <p class="text-[11px] text-gray-400 mt-1.5">Isikan nama SMP / MTs lulusan Anda</p>
+                </div>
+
+                <!-- Dropdown Select Sumber Info -->
+                <div>
+                    <label for="dapatInfoSelect" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                        Dari mana Anda mengetahui sekolah kami? <span class="text-purple-600">*</span>
+                    </label>
+                    <div class="relative">
+                        <select id="dapatInfoSelect" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:bg-white transition-all appearance-none cursor-pointer pr-10">
+                            <option value="" disabled selected>-- Pilih Salah Satu Option --</option>
+                            <option value="Media Sosial">Media Sosial (Instagram, TikTok, FB, YouTube)</option>
+                            <option value="Pencarian Google">Pencarian Google / Website Sekolah</option>
+                            <option value="Iklan Berbayar">Iklan Berbayar (Google/Instagram Ads)</option>
+                            <option value="Spanduk/Brosur">Spanduk / Brosur / Banner Jalan</option>
+                            <option value="Teman/Tetangga">Teman / Tetangga / Kerabat</option>
+                            <option value="Alumni Sekolah">Alumni SMK Tamansiswa</option>
+                            <option value="Orang Tua/Kakak">Orang Tua / Kakak Tingkat</option>
+                            <option value="Tim Sosialisasi">Kunjungan Tim Sosialisasi ke SMP</option>
+                            <option value="Pameran Pendidikan">Pameran Pendidikan / Event Lomba</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col-reverse sm:flex-row gap-2.5 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="resetAll()"
+                        class="w-full sm:w-1/3 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-xl transition-all active:scale-[0.98]">
+                        Kembali
+                    </button>
+                    <button type="submit" id="submitBtn"
+                        class="w-full sm:w-2/3 py-3 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl shadow-sm shadow-purple-500/20 transition-all active:scale-[0.98] flex items-center justify-center">
+                        Simpan Data
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- STEP 3: Success Screen -->
+        <div id="step3Content" class="hidden fade-in">
+            <div class="bg-white rounded-2xl p-8 sm:p-10 shadow-sm border border-gray-200/80 text-center">
+                <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 border border-purple-100">
+                    ✦
+                </div>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900 mb-2">Data Berhasil Disimpan!</h2>
+                <p class="text-xs sm:text-sm text-gray-500 leading-relaxed mb-6">Terima kasih telah berpartisipasi mengisi survey. Data Anda telah tercatat dengan aman di sistem kami.</p>
+                <button type="button" onclick="resetAll()"
+                    class="w-full sm:w-auto px-8 py-3 bg-gray-900 hover:bg-black text-white text-sm font-semibold rounded-xl active:scale-[0.98] transition-all">
+                    Isi Survey Lain
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Simple -->
+    <footer class="w-full py-6 text-center border-t border-gray-100 text-xs text-gray-400 bg-white">
+        <p>© tamsis.dev — SMK Tamansiswa Jetis</p>
+    </footer>
+
+    <script src="script.js">
+      
+    </script>
+</body>
+
+</html>
