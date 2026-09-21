@@ -160,7 +160,7 @@
                         Dari mana Anda mengetahui sekolah kami? <span class="text-purple-600">*</span>
                     </label>
                     <div class="relative">
-                        <select id="dapatInfoSelect" required
+                        <select id="dapatInfoSelect" required onchange="toggleLainnyaInput()"
                             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:bg-white transition-all appearance-none cursor-pointer pr-10">
                             <option value="" disabled selected>-- Pilih Salah Satu Option --</option>
                             <option value="Media Sosial">Media Sosial (Instagram, TikTok, FB, YouTube)</option>
@@ -172,6 +172,7 @@
                             <option value="Orang Tua/Kakak">Orang Tua / Kakak Tingkat</option>
                             <option value="Tim Sosialisasi">Kunjungan Tim Sosialisasi ke SMP</option>
                             <option value="Pameran Pendidikan">Pameran Pendidikan / Event Lomba</option>
+                            <option value="Lainnya">Lainnya...</option>
                         </select>
                         <div
                             class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-gray-400">
@@ -181,6 +182,16 @@
                             </svg>
                         </div>
                     </div>
+                </div>
+
+                <!-- Textfield Tambahan (Hanya muncul jika memilih "Lainnya") -->
+                <div id="dapatInfoLainnyaContainer" class="hidden fade-in">
+                    <label for="dapatInfoLainnya"
+                        class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                        Sebutkan Sumber Informasi Lainnya <span class="text-purple-600">*</span>
+                    </label>
+                    <input type="text" id="dapatInfoLainnya" placeholder="Tuliskan sumber informasi di sini..."
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600 focus:bg-white transition-all">
                 </div>
 
                 <!-- Action Buttons -->
@@ -220,9 +231,25 @@
         <p>© tamsis.dev — SMK Tamansiswa Jetis</p>
     </footer>
 
-    <script src="script.js">
+    <!-- Script Kontrol UI Dinamis -->
+    <script>
+        function toggleLainnyaInput() {
+            const selectElem = document.getElementById('dapatInfoSelect');
+            const lainnyaContainer = document.getElementById('dapatInfoLainnyaContainer');
+            const lainnyaInput = document.getElementById('dapatInfoLainnya');
 
+            if (selectElem.value === 'Lainnya') {
+                lainnyaContainer.classList.remove('hidden');
+                lainnyaInput.setAttribute('required', 'required');
+                lainnyaInput.focus();
+            } else {
+                lainnyaContainer.classList.add('hidden');
+                lainnyaInput.removeAttribute('required');
+                lainnyaInput.value = '';
+            }
+        }
     </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
